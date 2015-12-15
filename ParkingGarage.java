@@ -7,7 +7,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  * Methods parkcar and outparkcar. If the parking garage is full the IDs of the cars are stored in a Queue.
  * Cars which are at the Top of the Queue are allowed to park in first
  */
-public class ParkingGarage{
+public class ParkingGarage {
 
     /**The maximal Number of cars the parking garage can store*/
     private int maxcars;
@@ -27,7 +27,6 @@ public class ParkingGarage{
         this.maxcars = maxcars;
         waitingQueue = new LinkedBlockingQueue<>();
         log = Logger.getInstance();
-
     }
 
     /**
@@ -36,71 +35,52 @@ public class ParkingGarage{
      * If the garage has new space the fist element of the Queue gets stored and removed from the List.
      * @param carid id of the car that should be parked
      */
-    public synchronized void parkcar(int carid) {
+    public synchronized boolean parkcar(int carid) {
 
-        /**boolean to mark a car as parked or not*/
-        boolean parked = false;
-        while (!parked) {
-
-            /**If there is a Waiting Queue we test if the car is in it, if it`s at the head of the queue we remove it and mark it as parked.
-             * If it's in the queue but not at the head the car stays in the queue.
-             * If the car is not in the queue we add it.
-             */
-            if (waitingQueue.size() > 0) {
-                if (waitingQueue.peek().equals(carid) && cars < maxcars) {
-                    waitingQueue.remove();
-                    cars++;
-                    log.info("Removed from Queue: " + carid + " Cars in Queue:" + waitingQueue.toString());
-                    log.info("Cars in the garage: " + cars);
-                    parked = true;
-                } else {
-                    if (waitingQueue.contains(carid)) {
-                        log.info("Car already in Queue: " + carid + " Cars in Queue:" + waitingQueue.toString());
-                        parked = false;
-                    } else {
-                        waitingQueue.add(carid);
-                        log.info("Car added to Queue: " + carid + " Cars in Queue:" + waitingQueue.toString());
-                        parked = false;
-                    }
-                }
-
-                /**
-                 * If there is no Queue and there is free space in the garage, the car gets marked as parked and
-                 * the value of the parked cars gets incremented
-                 * If there is no free space in the garage the car gets added to a queue
-                 */
-            } else if (cars < maxcars) {
-                cars++;
-                log.info("Car parked in Garage: " + carid + " Cars in the Garage: " + cars);
-                parked = true;
-            } else {
-                waitingQueue.add(carid);
-                log.info("Car added to waiting Queue: " + carid + " Waiting Queue:" + waitingQueue.toString());
-                parked = false;
-            }
-
-            /**
-             * If the car is marked as not parked the thread gets put on wait
-             */
-            if (!parked) {
-                try {
-                    wait();
-                } catch (InterruptedException e) {
-                    log.error(e.getMessage());
-                }
-            }
-
+      boolean parked = false;
+      /**If there is a Waiting Queue we test if the car is in it, if it`s at the head of the queue we remove it and mark it as parked.
+       * If it's in the queue but not at the head the car stays in the queue.
+       * If the car is not in the queue we add it.
+       */
+      if (waitingQueue.size() > 0) {
+        if (waitingQueue.peek().equals(carid) && cars < maxcars) {
+          waitingQueue.remove();
+          cars++;
+          log.info("Removed from Queue: " + carid + " Cars in Queue:" + waitingQueue.toString());
+          log.info("Cars in the garage: " + cars);
+          parked = true;
+        } else {
+          if (waitingQueue.contains(carid)) {
+            log.info("Car already in Queue: " + carid + " Cars in Queue:" + waitingQueue.toString());
+          } else {
+            waitingQueue.add(carid);
+            log.info("Car added to Queue: " + carid + " Cars in Queue:" + waitingQueue.toString());
+          }
         }
+
+        /**
+         * If there is no Queue and there is free space in the garage, the car gets marked as parked and
+         * the value of the parked cars gets incremented
+         * If there is no free space in the garage the car gets added to a queue
+         */
+      } else if (cars < maxcars) {
+        cars++;
+        log.info("Car parked in Garage: " + carid + " Cars in the Garage: " + cars);
+        parked = true;
+      } else {
+        waitingQueue.add(carid);
+        log.info("Car added to waiting Queue: " + carid + " Waiting Queue:" + waitingQueue.toString());
+      }
+
+      return parked;
     }
 
 
     /**
      * The Method is called by the car-threads to outpark a car.
-     * It calles "notifyAll()" to wake up all threads cause the garage has new space for cars
      */
     public synchronized void outparkcar(){
-               cars--;
-               log.info("Car got removed, there are: "+cars+" in the garage" + " Cars in Queue:" + waitingQueue.toString());
-               notifyAll();
-       }
+       cars--;
+       log.info("Car got removed, there are: "+cars+" in the garage" + " Cars in Queue:" + waitingQueue.toString());
+    }
 }

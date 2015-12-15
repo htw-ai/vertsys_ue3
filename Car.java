@@ -23,7 +23,7 @@ public class Car extends Thread{
         Random rn = new Random();
         carid = rn.nextInt()+1;
         log = Logger.getInstance();
-        }
+    }
 
     /**
      * Used to initialize the Objekt of the ParkingGarage which is used.
