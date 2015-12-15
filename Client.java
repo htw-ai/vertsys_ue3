@@ -15,7 +15,6 @@ public class Client {
     }
 
     public static void main(String[] args) {
-
         Random rand = new Random();
         try {
           int port = new ServerSocket(0).getLocalPort();
@@ -23,13 +22,13 @@ public class Client {
           boolean parked = false;
           byte[] sendData = OPERATIONS.PARK.name().getBytes();
           byte[] receiveData = new byte[1000];
-          DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length,InetAddress.getByName("localhost"), port);
+          DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, InetAddress.getByName("localhost"), port);
 
           do {
             clientSocket.send(sendPacket);
             DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
             clientSocket.receive(receivePacket);
-            parked   = receivePacket.getData()[0]!=0;
+            parked = receivePacket.getData()[0]!=0;
             Thread.sleep(rand.nextInt(2000 + 1));
           } while (parked);
 

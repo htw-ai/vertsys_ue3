@@ -25,11 +25,10 @@ public class Server {
             socket.receive(request);
             int carid = request.getPort();
             String s  = new String(request.getData());
-            log.error(s);
             OPERATIONS operation = s == OPERATIONS.PARK.name() ? OPERATIONS.PARK : OPERATIONS.OUTPARK;
 
             if(operation == OPERATIONS.PARK) {
-              byte[] parked = new byte[] { (byte) (garage.parkcar(carid)?1:0)};
+              byte[] parked = new byte[] { (byte) (garage.parkcar(carid)?1:0) };
 
               DatagramPacket reply = new DatagramPacket(parked,
                                                         request.getLength(),

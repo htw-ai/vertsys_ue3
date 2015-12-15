@@ -80,7 +80,8 @@ public class ParkingGarage {
      * The Method is called by the car-threads to outpark a car.
      */
     public synchronized void outparkcar(){
-       cars--;
+       if(cars > 0)
+         cars--;
        log.info("Car got removed, there are: "+cars+" in the garage" + " Cars in Queue:" + waitingQueue.toString());
     }
 }
