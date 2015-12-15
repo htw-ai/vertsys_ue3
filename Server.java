@@ -24,14 +24,14 @@ public class Server {
             DatagramPacket request = new DatagramPacket(buffer, buffer.length);
             socket.receive(request);
             int carid = request.getPort();
-            String s  = new String(request.getData());
-            OPERATIONS operation = s == OPERATIONS.PARK.name() ? OPERATIONS.PARK : OPERATIONS.OUTPARK;
+            String s  = new String(request.getData()).trim();
 
+            OPERATIONS operation = OPERATIONS.valueOf(s);
             if(operation == OPERATIONS.PARK) {
               byte[] parked = new byte[] { (byte) (garage.parkcar(carid)?1:0) };
 
               DatagramPacket reply = new DatagramPacket(parked,
-                                                        request.getLength(),
+                                                        parked.length,
                                                         request.getAddress(),
                                                         request.getPort());
               socket.send(reply);
