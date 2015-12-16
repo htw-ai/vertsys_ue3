@@ -3,8 +3,8 @@ import java.net.*;
 import java.util.Random;
 
 /**
- * The Main Class.
- * It Initialises the Parking Garage and the Threads of cars
+ * The Main Class for the Client.
+ * It starts a Car for parking
  */
 public class Client {
 

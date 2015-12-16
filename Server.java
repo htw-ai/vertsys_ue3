@@ -3,8 +3,8 @@ import java.io.*;
 import java.net.*;
 
 /**
- * The Main Class.
- * It Initialises the Parking Garage and the Threads of cars
+ * The Main Server Class.
+ * It Initialises the Parking Garage and listens for parking cars
  */
 public class Server {
 
